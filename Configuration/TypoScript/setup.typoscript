@@ -1,0 +1,13 @@
+module.tx_ausio.settings.tasks {
+  ausMetricsExporterExport {
+    title = Exports metrics
+    exceptionMail = tech@andersundsehr.com
+    disablePreview = 1
+    nice = 15
+    subTasks {
+      10 {
+        class = AUS\AusMetricsExporter\Task\ExportTask
+      }
+    }
+  }
+}
