@@ -15,7 +15,7 @@ class CollectorService implements SingletonInterface
 {
     public function collect(string $key, string $value): void
     {
-        $tableName = 'tx_ausproject_domain_model_metrics';
+        $tableName = 'tx_ausmetricsexporter_domain_model_metric';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
         try {
             $connection->executeStatement(
@@ -31,7 +31,7 @@ class CollectorService implements SingletonInterface
      */
     public function fetch(): array
     {
-        $tableName = 'tx_ausproject_domain_model_metrics';
+        $tableName = 'tx_ausmetricsexporter_domain_model_metric';
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
         $qb = $connection->createQueryBuilder();
 
