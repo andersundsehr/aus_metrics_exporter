@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AUS\AusMetricsExporter\Service;
 
+use DateInterval;
 use DateTime;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception;
@@ -28,6 +29,7 @@ class CollectorService implements SingletonInterface
     /**
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws Exception|DBALException
+     * @throws \Exception
      */
     public function fetch(): array
     {
@@ -41,7 +43,7 @@ class CollectorService implements SingletonInterface
             ->where(
                 $qb->expr()->gt(
                     'stamp',
-                    time() - 600
+                    $connection->quote((new DateTime())->sub(New DateInterval('PT5M'))->format('Y-M-d H:i:s'))
                 )
             )
             ->executeQuery()
