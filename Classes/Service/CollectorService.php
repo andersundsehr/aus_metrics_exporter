@@ -43,7 +43,7 @@ class CollectorService implements SingletonInterface
             ->where(
                 $qb->expr()->gt(
                     'stamp',
-                    $connection->quote((new DateTime())->sub(New DateInterval('PT5M'))->format('Y-M-d H:i:s'))
+                    $connection->quote((new DateTime())->sub(New DateInterval('PT5M'))->format('Y-m-d H:i:s'))
                 )
             )
             ->executeQuery()
