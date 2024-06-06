@@ -1,20 +1,46 @@
 {
   "name": "andersundsehr/aus_metrics_exporter",
-  "type": "typo3-cms-extension",
-  "version": "dev-",
   "description": "description",
   "license": "proprietary",
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "aus_metrics_exporter"
-    }
+  "type": "typo3-cms-extension",
+  "version": "dev-",
+  "require": {
+    "php": "^8.0",
+    "ext-bcmath": "*",
+    "typo3/cms-core": "^11.5 || ^12.4"
+  },
+  "require-dev": {
+    "pluswerk/grumphp-config": "^6.0 || ^7.0",
+    "saschaegerer/phpstan-typo3": "^1.10.0",
+    "ssch/typo3-rector": "^2.5.0",
+    "typo3/testing-framework": "^8.0.9"
   },
   "autoload": {
     "psr-4": {
       "AUS\\AusMetricsExporter\\": "Classes"
     }
   },
-  "require": {
-    "typo3/cms-core": "^11.5"
+  "autoload-dev": {
+    "psr-4": {
+      "AUS\\AusMetricsExporter\\Tests\\": "Tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true,
+      "phpro/grumphp": true,
+      "phpstan/extension-installer": true,
+      "pluswerk/grumphp-config": true,
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "aus_metrics_exporter"
+    }
+  },
+  "scripts": {
+    "test": "@php ./vendor/bin/phpunit -c phpunit.xml"
   }
 }

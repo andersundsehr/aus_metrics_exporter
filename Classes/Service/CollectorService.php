@@ -4,49 +4,79 @@ declare(strict_types=1);
 
 namespace AUS\AusMetricsExporter\Service;
 
-use DateInterval;
-use DateTime;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Exception;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use AUS\AusMetricsExporter\Exception\MetricsException;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 class CollectorService implements SingletonInterface
 {
-    public function collect(string $key, string $value): void
+    protected VariableFrontend $cache;
+
+    /**
+     * @throws NoSuchCacheException
+     */
+    public function __construct(protected readonly CacheManager $cacheManager)
     {
-        $tableName = 'tx_ausmetricsexporter_domain_model_metric';
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
-        try {
-            $connection->executeStatement(
-                'REPLACE INTO ' . $tableName . '(identifier, result, stamp) VALUES(' . $connection->quote($key) . ',' . $connection->quote($value) . ", '" . (new DateTime())->format('Y-m-d H:i:s') . "')"
-            );
-        } catch (Exception) {
+        $cache = $this->cacheManager->getCache('ausmetricsexporter_cache');
+        if (!$cache instanceof VariableFrontend) {
+            throw new MetricsException('ausmetricsexporter_cache must implement VariableFrontend');
         }
+
+        $this->cache = $cache;
+    }
+
+    public function collect(string $key, string $value, bool $set = false): void
+    {
+        $keys = $this->getKeys();
+        $keys = array_flip($keys);
+        $keys[$key] = true;
+        $this->cache->set('_keys', array_keys($keys));
+
+        if ($set || !$this->cache->has($key)) {
+            $this->cache->set($key, $value);
+            return;
+        }
+
+        $currentValue = $this->cache->get($key);
+        if (!is_string($currentValue)) {
+            $currentValue = '0.0';
+        }
+
+        $added = bcadd($value, $currentValue, 16);
+        $this->cache->set($key, $added);
     }
 
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws Exception|DBALException
-     * @throws \Exception
+     * @return array<string, string>
      */
     public function fetch(): array
     {
-        $tableName = 'tx_ausmetricsexporter_domain_model_metric';
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
-        $qb = $connection->createQueryBuilder();
+        $values = [];
+        foreach ($this->getKeys() as $key) {
+            $value = $this->cache->get($key);
+            if (!is_string($value)) {
+                continue;
+            }
 
-        // Stop collecting non-updated fields
-        return $qb->select('*')
-            ->from($tableName)
-            ->where(
-                $qb->expr()->gt(
-                    'stamp',
-                    $connection->quote((new DateTime())->sub(New DateInterval('PT5M'))->format('Y-m-d H:i:s'))
-                )
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
+            $values[$key] = $value;
+        }
+
+        return $values;
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getKeys(): array
+    {
+        $keys = $this->cache->get('_keys');
+        if (!is_array($keys)) {
+            return [];
+        }
+
+        return $keys;
     }
 }

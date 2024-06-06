@@ -1,13 +1,36 @@
-module.tx_ausio.settings.tasks {
-  ausMetricsExporterExport {
-    title = Exports metrics
-    exceptionMail = tech@andersundsehr.com
-    disablePreview = 1
-    nice = 15
-    subTasks {
-      10 {
-        class = AUS\AusMetricsExporter\Task\ExportTask
+ausmetricsexporter_expose = PAGE
+ausmetricsexporter_expose {
+  typeNum = 1717676395
+  config {
+    disableAllHeaderCode = 1
+    xhtml_cleaning = 0
+    debug = 0
+    admPanel = 0
+  }
+  10 = USER_INT
+  10 {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    pluginName = Display
+    extensionName = VecRssfeed
+    controller = Feed
+    vendorName = AUS
+    switchableControllerActions {
+      Feed {
+        1 = eventList
       }
+    }
+  }
+  config {
+    cache_period = 900
+    disableAllHeaderCode = 1
+    admPanel = 0
+    removeDefaultJS = 1
+    removeDefaultCss = 1
+    removePageCss = 1
+    additionalHeaders {
+      10.header = Content-Type:application/xml;charset=utf-8
+      20.header = X-Robots-Tag:noindex
+      30.header = Access-Control-Allow-Origin: *
     }
   }
 }

@@ -7,12 +7,8 @@ services:
   AUS\AusMetricsExporter\:
     resource: '../Classes/*'
 
-  AUS\AusMetricsExporter\Command\MetricsCommand:
-    tags:
-      - name: 'console.command'
-        command: 'andersundsehr:metrics-exporter:export'
-        description: 'Writes metrics to the configured place where you can scrape them'
-
   AUS\AusMetricsExporter\Service\CollectorService:
     public: true
 
+  AUS\AusMetricsExporter\Exporter\MetricsExporter:
+    public: true
