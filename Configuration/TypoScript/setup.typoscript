@@ -10,27 +10,25 @@ ausmetricsexporter_expose {
   10 = USER_INT
   10 {
     userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-    pluginName = Display
-    extensionName = VecRssfeed
-    controller = Feed
+    pluginName = Expose
+    extensionName = AusMetricsExpoter
+    controller = Expose
     vendorName = AUS
     switchableControllerActions {
-      Feed {
-        1 = eventList
+      Expose {
+        1 = list
       }
     }
   }
   config {
-    cache_period = 900
+    cache_period = 0
     disableAllHeaderCode = 1
     admPanel = 0
     removeDefaultJS = 1
     removeDefaultCss = 1
     removePageCss = 1
     additionalHeaders {
-      10.header = Content-Type:application/xml;charset=utf-8
-      20.header = X-Robots-Tag:noindex
-      30.header = Access-Control-Allow-Origin: *
+      10.header = X-Robots-Tag:noindex
     }
   }
 }
