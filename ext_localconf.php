@@ -1,16 +1,10 @@
 <?php
 
-use AUS\AusMetricsExporter\Controller\ExposeController;
-use TYPO3\CMS\Core\Cache\Backend\SimpleFileBackend;
-use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
+use AUS\MetricsExporter\Controller\ExposeController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') || die();
-
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations']['ausmetricsexporter_cache'] = [
-    'frontend' => VariableFrontend::class,
-    'backend' => SimpleFileBackend::class,
-];
 
 call_user_func(
     static function (): void {
@@ -23,6 +17,10 @@ call_user_func(
             [
                 ExposeController::class => 'list',
             ]
+        );
+
+        ExtensionManagementUtility::addTypoScriptSetup(
+            '@import "EXT:metrics_exporter/Configuration/TypoScript/setup.typoscript"'
         );
     }
 );

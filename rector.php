@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use PLUS\GrumPHPConfig\RectorSettings;
+use Rector\CodingStyle\Rector\ClassMethod\MakeInheritedMethodVisibilitySameAsParentRector;
 use Rector\Config\RectorConfig;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Ssch\TYPO3Rector\TYPO311\v0\DateTimeAspectInsteadOfGlobalsExecTimeRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->parallel();
@@ -31,6 +33,8 @@ return static function (RectorConfig $rectorConfig): void {
         [
             ...RectorSettings::skip(),
             ...RectorSettings::skipTypo3(),
+            DateTimeAspectInsteadOfGlobalsExecTimeRector::class,
+            MakeInheritedMethodVisibilitySameAsParentRector::class,
 
             /**
              * rector should not touch these files
