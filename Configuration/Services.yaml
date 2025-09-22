@@ -4,11 +4,15 @@ services:
     autoconfigure: true
     public: false
 
-  AUS\AusMetricsExporter\:
+  AUS\MetricsExporter\:
     resource: '../Classes/*'
 
-  AUS\AusMetricsExporter\Service\CollectorService:
+  AUS\MetricsExporter\Service\CollectorService:
     public: true
 
-  AUS\AusMetricsExporter\Exporter\MetricsExporter:
-    public: true
+  AUS\MetricsExporter\EventListener\AlterTableDefinitionStatementsEventListener:
+    tags:
+      -
+        name: event.listener
+        identifier: aus/metrics-exporter/alter-table-definition-statements-event-listener
+        event: TYPO3\CMS\Core\Database\Event\AlterTableDefinitionStatementsEvent

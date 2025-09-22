@@ -1,5 +1,5 @@
-ausmetricsexporter_expose = PAGE
-ausmetricsexporter_expose {
+metricsexporter_expose = PAGE
+metricsexporter_expose {
   typeNum = 1717676395
   config {
     disableAllHeaderCode = 1
